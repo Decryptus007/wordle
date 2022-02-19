@@ -19,6 +19,7 @@ body {
     text-align: center;
     width: 510px;
     border-bottom: solid 1px #3a3a3c;
+    margin-bottom: 30px;
 }
 
 .tile-container {
@@ -51,6 +52,10 @@ body {
     margin-left: 30px;
 }
 
+.tile-container {
+    margin-top: 30px;
+}
+
 .tile-container div {
     display: flex;
 }
@@ -69,3 +74,42 @@ body {
 .message-container {
     height: 30px;
 }
+
+.message-container p {
+    background-color: #818384;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0;
+}
+
+.tile.flip {
+    animation: 0.5s linear flipping;
+}
+ 
+@keyframes flipping {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+.grey-overlay {
+    background-color: #3a3a3c !important;
+    border: none !important;
+}
+
+.yellow-overlay {
+    background-color: #b59f3a !important;
+    border: none !important;
+}
+
+.green-overlay {
+    background-color: #538d4e !important;
+    border: none !important;
+}
+
