@@ -2,7 +2,18 @@ const tileDisplay = document.querySelector('.tile-container')
 const keyboard = document.querySelector('.key-container')
 const messageDisplay = document.querySelector('.message-container')
 
-const wordle = 'SUPER'
+let wordle
+
+const getWordle = () => {
+    fetch('http://localhost:8000/word')
+        .then(response => response.json())
+        .then(json => {
+            console.log(json)
+            wordle = json.toUpperCase()
+        })
+        .catch(err => console.log(err))
+}
+getWordle()
 
 const keys = [
     'Q',
@@ -24,7 +35,7 @@ const keys = [
     'J',
     'K',
     'L',
-    'ENTER', //  ↲
+    '␡', //  ↲
     'Z',
     'X',
     'C',
@@ -32,7 +43,7 @@ const keys = [
     'B',
     'N',
     'M',
-    '⇚'
+    '↲'
 ]
 
 const guessRows = [
@@ -69,15 +80,17 @@ keys.forEach(key => {
 })
 
 const handleClick = (letter) => {
-    if (letter === '⇚') {
+    if (!isGameOver) {
+        if (letter === '␡') {
         deleteLetter()
         return
+        }
+        if (letter === '↲') {
+            checkRow()
+            return
+        }
+        addLetter(letter)
     }
-    if (letter === 'ENTER') {
-        checkRow()
-        return
-    }
-    addLetter(letter)
 }
 
 const addLetter = (letter) => {
@@ -102,25 +115,31 @@ const deleteLetter = () => {
 
 const checkRow = () => {
     const guess = guessRows[currentRow].join('')
-    flipTile()
+    console.log("guess", guess)
 
     if (currentTile > 4) {
-        console.log('Guess is ' + guess + ', The wordle is ' + wordle);
-        if (wordle == guess) {
-            showMessage('Magnificient!')
-            isGameOver = true
-            return
-        } else {
-            if (currentRow >= 5) {
-                isGameOver = false
-                showMessage('Game Over')
-                return
-            }
-            if (currentRow < 5) {
-                currentRow++
-                currentTile = 0
-            }
-        }
+        flipTile()
+        
+        fetch(`http://localhost:8000/check/?word=${guess}`)
+            .then(response => response.json())
+            .then(json => {
+                console.log(json)
+                if (wordle == guess) {
+                    showMessage('Magnificient!')
+                    isGameOver = true
+                    return
+                } else {
+                    if (currentRow >= 5) {
+                        isGameOver = true
+                        showMessage('Game Over')
+                        return
+                    }
+                    if (currentRow < 5) {
+                        currentRow++
+                        currentTile = 0
+                    }
+                }
+            }).catch(err => console.log(err))
     }
 }
 
